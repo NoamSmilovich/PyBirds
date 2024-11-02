@@ -21,4 +21,4 @@ RUN echo "conda activate PyBirds" >> ~/.bashrc
 SHELL ["/bin/bash", "--login", "-c"]
 
 # Start the application
-CMD ["conda", "run", "-n", "PyBirds", "gunicorn", "app:app", "--bind", "0.0.0.0:$PORT"]
+CMD ["conda", "run", "-n", "PyBirds", "gunicorn", "app:app", "--bind", "0.0.0.0:8000"]
