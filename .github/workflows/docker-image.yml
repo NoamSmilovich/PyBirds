@@ -11,7 +11,11 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-
+    
+    env:
+      IMAGE_TAG: pybirds-server:latest
+      TIMESTAMP: ${{ github.run_id }}
+      
     steps:
     # Checkout the repository
     - uses: actions/checkout@v4
@@ -25,11 +29,10 @@ jobs:
 
     # Build the Docker image
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag pybirds-server:$(date +%s)
+      run: docker build . --file Dockerfile --tag pybirds-server:${{ env.TIMESTAMP }}
 
     # Tag and push the Docker image to Docker Hub
-    - name: Push Docker image
+    - name: Tag and Push Docker image
       run: |
-        IMAGE_TAG=pybirds-server:latest
-        docker tag pybirds-server:$(date +%s) ${{ secrets.DOCKER_USERNAME }}/$IMAGE_TAG
-        docker push ${{ secrets.DOCKER_USERNAME }}/$IMAGE_TAG
+        docker tag pybirds-server:${{ env.TIMESTAMP }} ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_TAG }}
+        docker push ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_TAG }}
