@@ -25,10 +25,11 @@ jobs:
 
     # Build the Docker image
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      run: docker build . --file Dockerfile --tag pybirds-server:$(date +%s)
 
     # Tag and push the Docker image to Docker Hub
     - name: Push Docker image
       run: |
-        docker tag my-image-name:$(date +%s) your-dockerhub-username/my-image-name:latest
-        docker push your-dockerhub-username/my-image-name:latest
+        IMAGE_TAG=pybirds-server:latest
+        docker tag pybirds-server:$(date +%s) ${{ secrets.DOCKER_USERNAME }}/$IMAGE_TAG
+        docker push ${{ secrets.DOCKER_USERNAME }}/$IMAGE_TAG
