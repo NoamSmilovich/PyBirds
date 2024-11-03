@@ -36,3 +36,9 @@ jobs:
       run: |
         docker tag pybirds-server:${{ env.TIMESTAMP }} ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_TAG }}
         docker push ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_TAG }}
+
+    # Trigger Render deploy hook
+    - name: Trigger Render Deploy Hook
+      if: success()  # Only run this step if previous steps succeeded
+      run: |
+        curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
