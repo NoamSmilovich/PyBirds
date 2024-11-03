@@ -1,0 +1,34 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checkout the repository
+    - uses: actions/checkout@v4
+
+    # Log in to Docker Hub using the access token
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_TOKEN }}
+
+    # Build the Docker image
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+
+    # Tag and push the Docker image to Docker Hub
+    - name: Push Docker image
+      run: |
+        docker tag my-image-name:$(date +%s) your-dockerhub-username/my-image-name:latest
+        docker push your-dockerhub-username/my-image-name:latest
