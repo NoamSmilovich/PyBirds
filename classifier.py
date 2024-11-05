@@ -26,10 +26,14 @@ class SimpleCNN(nn.Module):
         self.conv4 = ConvBlock(32, 64, stride=2)
         self.conv5 = ConvBlock(64, 64)
         self.conv6 = ConvBlock(64, 64)
-        self.conv7 = ConvBlock(64, 64)
-        self.conv8 = ConvBlock(64, 64)
+        self.conv7 = ConvBlock(64, 128, stride=2)
+        self.conv8 = ConvBlock(128, 128)
+        self.conv9 = ConvBlock(128, 256, stride=2)
+        self.conv10 = ConvBlock(256, 256)
+        # self.conv11 = ConvBlock(256, 256)
+        # self.conv12 = ConvBlock(256, 256)
         
-        self.fc1 = nn.Linear(64 * 28 * 28, 256)
+        self.fc1 = nn.Linear(256 * 7 * 7, 256)
         self.final_dropout = nn.Dropout(p=0.5)
         self.bn = nn.BatchNorm1d(256)
         self.fc2 = nn.Linear(256, 525)
@@ -43,6 +47,10 @@ class SimpleCNN(nn.Module):
         x = self.conv6(x)
         x = self.conv7(x)
         x = self.conv8(x)
+        x = self.conv9(x)
+        x = self.conv10(x)
+        # x = self.conv11(x)
+        # x = self.conv12(x)
         
         x = torch.flatten(x, 1)  # Flatten before the fully connected layers
         x = F.relu(self.bn(self.fc1(x))) 
