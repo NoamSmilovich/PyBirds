@@ -11,24 +11,34 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-
+    
+    env:
+      IMAGE_TAG: pybirds-server:latest
+      TIMESTAMP: ${{ github.run_id }}
+      
     steps:
     # Checkout the repository
     - uses: actions/checkout@v4
 
     # Log in to Docker Hub using the access token
     - name: Log in to Docker Hub
-      uses: docker/login-action@v2
+      uses: docker/login-action@v3
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_TOKEN }}
 
     # Build the Docker image
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      run: docker build . --file Dockerfile --tag pybirds-server:${{ env.TIMESTAMP }}
 
     # Tag and push the Docker image to Docker Hub
-    - name: Push Docker image
+    - name: Tag and Push Docker image
       run: |
-        docker tag my-image-name:$(date +%s) your-dockerhub-username/my-image-name:latest
-        docker push your-dockerhub-username/my-image-name:latest
+        docker tag pybirds-server:${{ env.TIMESTAMP }} ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_TAG }}
+        docker push ${{ secrets.DOCKER_USERNAME }}/${{ env.IMAGE_TAG }}
+
+    # Trigger Render deploy hook
+    - name: Trigger Render Deploy Hook
+      if: success()  # Only run this step if previous steps succeeded
+      run: |
+        curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
