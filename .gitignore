@@ -5,3 +5,4 @@ data.zip
 train.sh
 models/
 transformers_cache/
+plots/
